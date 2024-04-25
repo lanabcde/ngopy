@@ -12,11 +12,6 @@ from materi import forms as MFORM
 from .filters import SiswaFilter
 from materi.forms import QuizSubmissionFilterForm,KuisForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from django.http import HttpResponse
-from django.http import HttpResponseForbidden
 
 def login_guru(request):
     if request.method=='POST':
