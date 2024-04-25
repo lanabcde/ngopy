@@ -52,14 +52,6 @@ def login_siswa(request):
     return render(request, 'siswa/login_siswa.html',
     context={'form':AuthenticationForm()})
 
-def guru_required(view_func):
-    def wrapper(request, *args, **kwargs):
-        # Cek apakah pengguna telah masuk dan apakah mereka adalah guru
-        if not request.user.is_authenticated or not request.user.is_guru:
-            return HttpResponseForbidden("Akses Dibatasi!, hanya pengajar yang dapat mengakses halaman ini")
-        return view_func(request, *args, **kwargs)
-    return wrapper
-
 @login_required(login_url='login_siswa')
 def home_siswa(request):
 
@@ -71,7 +63,6 @@ def profile_siswa(request):
     return render(request,'siswa/profile_siswa.html')
 
 @login_required(login_url='login_guru')
-@guru_required
 def home_guru(request):
 
     return render(request,'guru/home_guru.html')
@@ -98,12 +89,10 @@ class regist_guru(CreateView):
         return redirect('login_guru')
 
 @login_required(login_url='login_guru')
-@guru_required
 def hapus_siswa(request,pk):
     Siswa.objects.filter(pk=pk).delete()
     return redirect('data_siswa')
 
-@guru_required
 class edit_siswa(UpdateView):
     model = User
     form_class = UserFormSiswa
@@ -132,7 +121,6 @@ def login_siswa(request):
     return render(request, 'siswa/login_siswa.html',
     context={'form':AuthenticationForm()})
 
-@guru_required
 def login_guru(request):
     if request.method=='POST':
         form = AuthenticationForm(data=request.POST)
@@ -166,7 +154,6 @@ def data_siswa(request):
     return render(request, 'guru/data_siswa.html', {'siswa_filter': siswa_filter})
 
 @login_required(login_url='login_guru')
-@guru_required
 def data_hasil_belajar(request):
     quiz_submission_filter_form = QuizSubmissionFilterForm(request.GET)
     queryset = QuizSubmission.objects.all().order_by('-submitted_at')  # Urutkan dari yang terbaru hingga yang terlama
@@ -194,12 +181,10 @@ def data_hasil_belajar(request):
     return render(request, 'guru/hasil_belajar.html', {'quiz_submission_filter_form': quiz_submission_filter_form, 'hasil_belajar': hasil_belajar})
 
 @login_required(login_url='login_guru')
-@guru_required
 def data_kuis(request):
     kuis = MMODEL.Quiz.objects.all()
     return render(request,'guru/data_kuis.html',{'kuis':kuis})
 
-@guru_required
 class edit_kuis(UpdateView):
     model = MMODEL.Quiz
     form_class = MFORM.KuisForm
@@ -209,7 +194,6 @@ class edit_kuis(UpdateView):
          form.save()
          return redirect('data_kuis')
         
-@guru_required
 def profile_siswa(request, username):   
   # profile user
     user_object2 = User.objects.get(username=username)
@@ -224,7 +208,6 @@ def profile_siswa(request, username):
     context = {"user_profile": user_profile, "user_profile2": user_profile2, "submissions":submissions}
     return render(request, "profile.html", context)
 
-@guru_required
 def hapus_hasil_belajar(request, pk):
     hasil_belajar = get_object_or_404(QuizSubmission, pk=pk)
     hasil_belajar.delete()
@@ -253,7 +236,6 @@ class edit_guru_profile(UpdateView):
          form.save()
          return redirect('guru_profile',pk=self.request.user.pk)
         
-@guru_required
 def export_to_pdf(request):
     # Mendapatkan data filter dari URL
     filter_data = request.GET.dict()
