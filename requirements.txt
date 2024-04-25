@@ -3,7 +3,7 @@ cachetools==5.3.3
 certifi==2024.2.2
 chardet==5.2.0
 charset-normalizer==3.3.2
-django==4.2.11
+Django==4.2.11
 django-ckeditor==6.7.0
 django-filter==23.5
 django-js-asset==2.2.0
