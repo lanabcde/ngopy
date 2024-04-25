@@ -18,7 +18,6 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 
-@guru_required
 def login_guru(request):
     if request.method=='POST':
         form = AuthenticationForm(data=request.POST)
@@ -57,7 +56,7 @@ def guru_required(view_func):
     def wrapper(request, *args, **kwargs):
         # Cek apakah pengguna telah masuk dan apakah mereka adalah guru
         if not request.user.is_authenticated or not request.user.is_guru:
-            return HttpResponseForbidden("<h1>Akses Dibatasi!, hanya pengajar yang dapat mengakses halaman ini</h1>")
+            return HttpResponseForbidden("Akses Dibatasi!, hanya pengajar yang dapat mengakses halaman ini")
         return view_func(request, *args, **kwargs)
     return wrapper
 
