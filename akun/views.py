@@ -16,7 +16,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from django.http import HttpResponse
-
+from django.http import HttpResponseForbidden
 
 def login_guru(request):
     if request.method=='POST':
@@ -51,6 +51,14 @@ def login_siswa(request):
                 messages.error(request,"Invalid username or password")
     return render(request, 'siswa/login_siswa.html',
     context={'form':AuthenticationForm()})
+
+def guru_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        # Cek apakah pengguna telah masuk dan apakah mereka adalah guru
+        if not request.user.is_authenticated or not request.user.is_guru:
+            return HttpResponseForbidden("Akses Dibatasi!,Anda tidak bisa mengakses halaman ini karena anda bukan guru.")
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 @login_required(login_url='login_siswa')
 def home_siswa(request):
