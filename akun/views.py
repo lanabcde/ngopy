@@ -57,7 +57,7 @@ def guru_required(view_func):
     def wrapper(request, *args, **kwargs):
         # Cek apakah pengguna telah masuk dan apakah mereka adalah guru
         if not request.user.is_authenticated or not request.user.is_guru:
-            return HttpResponseForbidden("Akses Dibatasi!,Anda tidak bisa mengakses halaman ini karena anda bukan guru.")
+            return HttpResponseForbidden("<h1>Akses Dibatasi!, hanya pengajar yang dapat mengakses halaman ini</h1>")
         return view_func(request, *args, **kwargs)
     return wrapper
 
